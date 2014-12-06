@@ -65,6 +65,7 @@
 // Returns midnight of the first day of the current, previous or next Month.
 // Note: firstDayOfNextMonth returns midnight of the first day of next month,
 // which is effectively the same as the "last moment" of the current month.
++ (NSDate *)firstDayOfMonthForDate:(NSDate *)date;
 + (NSDate *)firstDayOfCurrentMonth;
 + (NSDate *)firstDayOfPreviousMonth;
 + (NSDate *)firstDayOfNextMonth;

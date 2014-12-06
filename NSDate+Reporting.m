@@ -35,6 +35,8 @@
 
 @implementation NSDate (Reporting)
 
+#pragma mark - Day
+
 + (NSDate *)dateWithYear:(int)year month:(int)month day:(int)day {
     NSDateComponents *components = [[NSDateComponents alloc] init];
     
@@ -83,12 +85,14 @@
                                              options:0];
 }
 
-+ (NSDate *)firstDayOfCurrentMonth {
+#pragma mark - Month
+
++ (NSDate *)firstDayOfMonthForDate:(NSDate *)date{
     NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     
-    // Start out by getting just the year, month and day components of the current date.    
-    NSDate *currentDate = [NSDate date];
-    NSDateComponents *components = [gregorianCalendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit 
+    // Start out by getting just the year, month and day components of the current date.
+    NSDate *currentDate = date;
+    NSDateComponents *components = [gregorianCalendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit
                                                         fromDate:currentDate];
     
     // Change the Day component to 1 (for the first day of the month), and zero out the time components.
@@ -96,6 +100,10 @@
     [self zeroOutTimeComponents:&components];
     
     return [gregorianCalendar dateFromComponents:components];
+}
+
++ (NSDate *)firstDayOfCurrentMonth {
+    return [self firstDayOfMonthForDate:[NSDate date]];
 }
 
 + (NSDate *)firstDayOfPreviousMonth {
@@ -110,18 +118,7 @@
                                                                   toDate:currentDate
                                                                  options:0];
     
-    // Now extract the year, month and day components of oneMonthAgoToday.
-    NSDateComponents *components = [gregorianCalendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit 
-                                                        fromDate:oneMonthAgoToday];    
-    
-    // Change the day to 1 (since we want the first day of the previous month).
-    [components setDay:1];
-    
-    // Zero out the time components so we get midnight.
-    [self zeroOutTimeComponents:&components];
-    
-    // Finally, create a new NSDate from components and return it.
-    return [gregorianCalendar dateFromComponents:components];    
+    return [self firstDayOfMonthForDate:oneMonthAgoToday];
 }
 
 + (NSDate *)firstDayOfNextMonth {
@@ -137,6 +134,8 @@
                                               toDate:firstDayOfCurrentMonth
                                              options:0];    
 }
+
+#pragma mark - Quarter
 
 + (NSDate *)firstDayOfCurrentQuarter {
     return [self firstDayOfQuarterFromDate:[NSDate date]];
@@ -156,6 +155,8 @@
                                                                          options:0];    
     return [self firstDayOfQuarterFromDate:lastDayOfPreviousQuarter];
 }
+
+#pragma mark - Year
 
 + (NSDate *)firstDayOfNextQuarter {
     NSDate *firstDayOfCurrentQuarter = [self firstDayOfCurrentQuarter];
@@ -214,6 +215,8 @@
                                               toDate:firstDayOfCurrentYear
                                              options:0];
 }
+
+#pragma mark - Logging
 
 #ifdef DEBUG
 - (void)logWithComment:(NSString *)comment {
